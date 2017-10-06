@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="NotesServiceDbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="NotesServiceDbModelStoreContainer" />
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NotesServiceDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="NotesServiceDbEntities" annotation:LazyLoadingEnabled="true" >
+          <EntitySet Name="UserSet" EntityType="NotesServiceDbModel.User" />
+          <EntitySet Name="NoteSet" EntityType="NotesServiceDbModel.Note" />
+          <EntitySet Name="CategorySet" EntityType="NotesServiceDbModel.Category" />
+          <EntitySet Name="UserNotesSet" EntityType="NotesServiceDbModel.UserNotes" />
+          <EntitySet Name="UserSharesSet" EntityType="NotesServiceDbModel.UserShares" />
+          <EntitySet Name="UserCategoriesSet" EntityType="NotesServiceDbModel.UserCategories" />
+          <AssociationSet Name="UserUserNotes" Association="NotesServiceDbModel.UserUserNotes">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="UserNotes" EntitySet="UserNotesSet" />
+          </AssociationSet>
+          <AssociationSet Name="NoteUserNotes" Association="NotesServiceDbModel.NoteUserNotes">
+            <End Role="Note" EntitySet="NoteSet" />
+            <End Role="UserNotes" EntitySet="UserNotesSet" />
+          </AssociationSet>
+          <AssociationSet Name="UserUserCategories" Association="NotesServiceDbModel.UserUserCategories">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="UserCategories" EntitySet="UserCategoriesSet" />
+          </AssociationSet>
+          <AssociationSet Name="CategoryUserCategories" Association="NotesServiceDbModel.CategoryUserCategories">
+            <End Role="Category" EntitySet="CategorySet" />
+            <End Role="UserCategories" EntitySet="UserCategoriesSet" />
+          </AssociationSet>
+          <AssociationSet Name="UserUserShares" Association="NotesServiceDbModel.UserUserShares">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="UserShares" EntitySet="UserSharesSet" />
+          </AssociationSet>
+          <EntitySet Name="NoteCategoriesSet" EntityType="NotesServiceDbModel.NoteCategories" />
+          <AssociationSet Name="CategoryNoteCategories" Association="NotesServiceDbModel.CategoryNoteCategories">
+            <End Role="Category" EntitySet="CategorySet" />
+            <End Role="NoteCategories" EntitySet="NoteCategoriesSet" />
+          </AssociationSet>
+          <AssociationSet Name="NoteNoteCategories" Association="NotesServiceDbModel.NoteNoteCategories">
+            <End Role="Note" EntitySet="NoteSet" />
+            <End Role="NoteCategories" EntitySet="NoteCategoriesSet" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="UserNotes" Relationship="NotesServiceDbModel.UserUserNotes" FromRole="User" ToRole="UserNotes" />
+          <NavigationProperty Name="UserCategories" Relationship="NotesServiceDbModel.UserUserCategories" FromRole="User" ToRole="UserCategories" />
+          <NavigationProperty Name="UserShares" Relationship="NotesServiceDbModel.UserUserShares" FromRole="User" ToRole="UserShares" />
+        </EntityType>
+        <EntityType Name="Note">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OwnerId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Text" Type="String" Nullable="false" />
+          <Property Name="CreatedTime" Type="DateTime" Nullable="false" />
+          <Property Name="ModifiedTime" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="UserNotes" Relationship="NotesServiceDbModel.NoteUserNotes" FromRole="Note" ToRole="UserNotes" />
+          <NavigationProperty Name="NoteCategories" Relationship="NotesServiceDbModel.NoteNoteCategories" FromRole="Note" ToRole="NoteCategories" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <NavigationProperty Name="UserCategories" Relationship="NotesServiceDbModel.CategoryUserCategories" FromRole="Category" ToRole="UserCategories" />
+          <NavigationProperty Name="NoteCategories" Relationship="NotesServiceDbModel.CategoryNoteCategories" FromRole="Category" ToRole="NoteCategories" />
+        </EntityType>
+        <EntityType Name="UserNotes" >
+          <Key>
+            <PropertyRef Name="NoteId" />
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="NoteId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NotesServiceDbModel.UserUserNotes" FromRole="UserNotes" ToRole="User" />
+          <NavigationProperty Name="Note" Relationship="NotesServiceDbModel.NoteUserNotes" FromRole="UserNotes" ToRole="Note" />
+        </EntityType>
+        <EntityType Name="UserShares">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FromUserId" Type="Int32" Nullable="false" />
+          <Property Name="ToUserId" Type="Int32" Nullable="false" />
+          <Property Name="NoteId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NotesServiceDbModel.UserUserShares" FromRole="UserShares" ToRole="User" />
+        </EntityType>
+        <EntityType Name="UserCategories" >
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NotesServiceDbModel.UserUserCategories" FromRole="UserCategories" ToRole="User" />
+          <NavigationProperty Name="Category" Relationship="NotesServiceDbModel.CategoryUserCategories" FromRole="UserCategories" ToRole="Category" />
+        </EntityType>
+        <Association Name="UserUserNotes">
+          <End Type="NotesServiceDbModel.User" Role="User" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.UserNotes" Role="UserNotes" Multiplicity="*" />
+        </Association>
+        <Association Name="NoteUserNotes">
+          <End Type="NotesServiceDbModel.Note" Role="Note" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.UserNotes" Role="UserNotes" Multiplicity="*" />
+        </Association>
+        <Association Name="UserUserCategories">
+          <End Type="NotesServiceDbModel.User" Role="User" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.UserCategories" Role="UserCategories" Multiplicity="*" />
+        </Association>
+        <Association Name="CategoryUserCategories">
+          <End Type="NotesServiceDbModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.UserCategories" Role="UserCategories" Multiplicity="*" />
+        </Association>
+        <Association Name="UserUserShares">
+          <End Type="NotesServiceDbModel.User" Role="User" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.UserShares" Role="UserShares" Multiplicity="*" />
+        </Association>
+        <EntityType Name="NoteCategories" >
+          <Property Name="NoteId" Type="String" Nullable="false" />
+          <Property Name="CategoryId" Type="String" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="NotesServiceDbModel.CategoryNoteCategories" FromRole="NoteCategories" ToRole="Category" />
+          <NavigationProperty Name="Note" Relationship="NotesServiceDbModel.NoteNoteCategories" FromRole="NoteCategories" ToRole="Note" />
+        </EntityType>
+        <Association Name="CategoryNoteCategories">
+          <End Type="NotesServiceDbModel.Category" Role="Category" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.NoteCategories" Role="NoteCategories" Multiplicity="*" />
+        </Association>
+        <Association Name="NoteNoteCategories">
+          <End Type="NotesServiceDbModel.Note" Role="Note" Multiplicity="1" />
+          <End Type="NotesServiceDbModel.NoteCategories" Role="NoteCategories" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NotesServiceDbModelStoreContainer" CdmEntityContainer="NotesServiceDbEntities" />
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
